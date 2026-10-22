@@ -17,6 +17,7 @@
   --red: #e0533c;
   --blue: #2c5bd6;
   --yellow: #f6c933;
+  --green: #2f9e5b;
   --tape: rgba(246, 205, 80, 0.55);
   --display: "Caveat", "Comic Sans MS", "Segoe Print", cursive;
   color-scheme: light;
@@ -100,9 +101,17 @@ p { margin: 0; max-width: 65ch; }
 .tag { font-size: 0.8rem; font-weight: 500; padding: 1px 10px; border: 2px solid var(--ink); border-radius: 12px 4px 12px 4px; background: var(--paper); }
 .question { font-family: var(--display); font-size: 1.75rem; line-height: 1.15; font-weight: 700; color: var(--blue); margin: 6px 0; max-width: 32ch; }
 .wave-box { border: 2px dashed var(--muted); border-radius: 10px; padding: 10px 12px 6px; display: grid; gap: 2px; }
-.wave { width: 100%; height: 70px; display: block; }
+.wave { width: 100%; height: 120px; display: block; }
+.item p + p, .item p + .stats { margin-top: 8px; }
 .wave-cap { font-family: var(--display); font-size: 1.15rem; color: var(--muted); display: flex; justify-content: space-between; flex-wrap: wrap; gap: 8px; }
 .wave-cap b { color: var(--red); }
+.sq { display: inline-block; width: 11px; height: 11px; border: 2px solid var(--ink); border-radius: 2px; vertical-align: -1px; }
+.sq.g { background: var(--green); } .sq.r { background: var(--red); }
+.stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 12px; }
+.stat { border: 2px solid var(--ink); border-radius: 14px 6px 16px 5px / 5px 16px 6px 14px; padding: 8px 12px; background: var(--paper); display: grid; gap: 0; min-width: 0; }
+.stat:nth-child(odd) { transform: rotate(-1deg); } .stat:nth-child(even) { transform: rotate(0.8deg); }
+.stat b { font-family: var(--display); font-size: 1.8rem; line-height: 1.1; color: var(--blue); }
+.stat span { font-size: 0.84rem; color: var(--muted); line-height: 1.35; }
 
 .list { list-style: none; margin: 0; padding: 0; display: grid; gap: 10px; }
 .list li { display: grid; grid-template-columns: 96px 1fr; gap: 12px; align-items: baseline; }
@@ -146,14 +155,14 @@ footer .sig { font-family: var(--display); font-size: 1.7rem; color: var(--ink);
         <h1>Youssef Chatti</h1>
         <svg class="squiggle" viewBox="0 0 340 18" aria-hidden="true"><path d="M4 11 C 40 3, 70 16, 110 9 S 180 4, 220 11 S 300 14, 336 6"/></svg>
       </div>
-      <p class="role">Engineering student at <mark>ENSTA Paris</mark> and <mark>M2 MVA</mark> at ENS Paris-Saclay. Research intern at <mark>Inria Saclay</mark>, where I check whether watermarks survive generative audio models.</p>
+      <p class="role">Engineering student at <mark>ENSTA Paris</mark> and <mark>M2 MVA</mark> at ENS Paris-Saclay. Research intern at <mark>Inria Saclay</mark> in summer 2026, where I built a watermark that lets artists detect whether their music was used to train a generative model.</p>
       <nav class="links" aria-label="Profiles">
-        <a class="btn primary" href="#">My CV</a>
-        <a class="btn" href="https://github.com/">GitHub</a>
-        <a class="btn" href="https://www.linkedin.com/">LinkedIn</a>
+        <a class="btn primary" href="cv.pdf" target="_blank" rel="noopener">My CV</a>
+        <a class="btn" href="https://github.com/Ucef420" target="_blank" rel="noopener">GitHub</a>
+        <a class="btn" href="https://www.linkedin.com/in/youssef-chatti" target="_blank" rel="noopener">LinkedIn</a>
         <button class="btn" id="pause" type="button">Pause the doodles</button>
       </nav>
-      <span class="email">firstname.lastname [at] ensta.fr</span>
+      <span class="email">youssef.chatti@ensta.fr</span>
     </div>
     <div class="stage">
       <div class="bubble" id="heroBubble">Hi! I'm Youssef.</div>
@@ -170,23 +179,30 @@ footer .sig { font-family: var(--display); font-size: 1.7rem; color: var(--ink);
 
   <section class="note" id="research">
     <svg class="mascot" data-actor="listener" viewBox="-55 -105 110 150" aria-hidden="true"></svg>
-    <h2>Research</h2>
+    <h2>Experience</h2>
     <div class="item">
-      <div class="item-head"><h3>Audio watermarking for music generation models</h3><span class="when">2025 – now</span></div>
-      <span class="where">Inria Saclay, PETSCRAFT team · advised by Nicolas Anciaux</span>
-      <p class="question">If a music model is fine-tuned on watermarked audio, does the watermark come out the other side?</p>
-      <p>I watermark training audio with neural watermarkers (AudioSeal), fine-tune a generative model on it (Stable Audio Open, MUSDB18) and test whether the mark is still detectable in what the model generates. Key finding so far: neural codec tokenization (EnCodec, DAC, Mimi) largely wipes out subtle watermarks, so codec robustness is the main bottleneck, and diffusion pipelines look like the better route. A paper is in preparation.</p>
+      <div class="item-head"><h3>Radioactive watermarking for music</h3><span class="when">Jun – Aug 2026</span></div>
+      <span class="where">Research intern (PRE) · Inria Saclay, PETSCRAFT team · with Nicolas Anciaux, Cédric Eichler and Yanming Li</span>
+      <p class="question">If an artist's songs end up in a model's training set, can they prove it?</p>
+      <p>Music generation models are trained on corpora that are almost never disclosed. I first reproduced the only published attempt (an AudioSeal watermark in MusicGen's training data) and showed why it fails: the model never sees the waveform, only tokens from a perceptual codec that throws away the imperceptible detail the watermark lives in. Making it survive required so many passes that the music was no longer publishable.</p>
+      <p>So I moved the mark into the space the model actually works in. A secret key splits each codec codebook into a <mark>green list and a red list</mark>, and the audio is re-quantized using green tokens only, with no retraining of the codec or the model. A model fine-tuned on that music inherits a measurable bias toward green tokens, which a Monte-Carlo permutation test detects with an explicit false-positive guarantee, without assuming token independence or needing a reference model. I also showed that the naive binomial test flags a model that was never fine-tuned.</p>
+      <div class="stats">
+        <div class="stat"><b>&lt; 0.6 dB</b><span>quality cost beyond a plain codec round trip</span></div>
+        <div class="stat"><b>25 %</b><span>of the training corpus is enough to detect</span></div>
+        <div class="stat"><b>2 × 2</b><span>codecs and generation paradigms (MusicGen/EnCodec, VampNet/LAC)</span></div>
+        <div class="stat"><b>MP3</b><span>the mark survives compression</span></div>
+      </div>
       <div class="wave-box">
         <canvas class="wave" id="wave" aria-hidden="true"></canvas>
-        <div class="wave-cap"><span>a bit of music…</span><span><b>~~</b> the hidden watermark</span></div>
+        <div class="wave-cap"><span>music → codec tokens</span><span><i class="sq g"></i> green list &nbsp;<i class="sq r"></i> red list</span></div>
       </div>
-      <div class="tags"><span class="tag">AudioSeal</span><span class="tag">EnCodec / RVQ</span><span class="tag">Stable Audio Open</span><span class="tag">diffusion</span><span class="tag">radioactivity</span></div>
+      <div class="tags"><span class="tag">token-space watermarking</span><span class="tag">neural codecs</span><span class="tag">MusicGen</span><span class="tag">VampNet</span><span class="tag">permutation tests</span><span class="tag">radioactivity</span><span class="tag">PyTorch</span></div>
     </div>
     <div class="item">
-      <div class="item-head"><h3>LLM agent frameworks for long-document QA</h3><span class="when">Summer 2026</span></div>
-      <span class="where">Internship · <span class="todo">[Company]</span></span>
-      <p>Benchmarked LangGraph, OpenAI Agents SDK, Google ADK and Microsoft Agent Framework for question answering over 200+ page documents, with guardrails.</p>
-      <div class="tags"><span class="tag">agents</span><span class="tag">retrieval</span><span class="tag">evaluation</span></div>
+      <div class="item-head"><h3>AI intern</h3><span class="when">Jun – Aug 2025</span></div>
+      <span class="where">Dione Protocol · Newark, US (remote)</span>
+      <p>Our team won the IAOdyssey hackathon with a platform that generates AI content from real-time trends. I worked on the full website (login/signup, API integration, AI post generation), and we later extended it to blockchain, NFTs and memecoins, generating dynamic videos from CoinMarketCap trends.</p>
+      <div class="tags"><span class="tag">Python</span><span class="tag">FastAPI</span><span class="tag">React</span><span class="tag">LLMs</span><span class="tag">web scraping</span></div>
     </div>
   </section>
 
@@ -194,22 +210,24 @@ footer .sig { font-family: var(--display); font-size: 1.7rem; color: var(--ink);
     <svg class="mascot" data-actor="juggler" viewBox="-55 -120 110 165" aria-hidden="true"></svg>
     <h2>Projects <small>things I've juggled</small></h2>
     <div class="item">
-      <div class="item-head"><h3>Multi-agent system for autonomous MLOps pipelines</h3><span class="when">2026</span></div>
-      <p>Prototype of cooperating agents that run and repair DevOps/MLOps pipelines, compared against a baseline.</p>
-      <div class="tags"><span class="tag">multi-agent</span><span class="tag">MLOps</span></div>
+      <div class="item-head"><h3>CarbonSens: AI platform for environmental monitoring</h3><span class="when">GAIAthon'25</span></div>
+      <p>National and continental (Africa) winner of GAIAthon'25. A web app that combines IoT sensors, Copernicus satellite data and predictive AI to monitor industrial emissions.</p>
+      <div class="tags"><span class="tag">Python</span><span class="tag">Django</span><span class="tag">React</span><span class="tag">LoRaWAN</span><span class="tag">Copernicus API</span><span class="tag">Docker</span></div>
     </div>
     <div class="item">
-      <div class="item-head"><h3>Vision OOP: real-time camera processing</h3><span class="when">ENSTA</span></div>
-      <p>C++/OpenCV app with 14 filters and 5 design patterns, plus parallel and GPU pipeline modes with measured speedups. Built with Ons Lounissi.</p>
-      <div class="tags"><span class="tag">C++</span><span class="tag">OpenCV</span><span class="tag">GPU</span></div>
+      <div class="item-head"><h3>Tweet sentiment analysis: classical ML vs LLMs</h3><span class="when">NLP project</span></div>
+      <p>Comparative study of classical pipelines (TF-IDF with KNN, SVM, XGBoost), hybrid models (BERT embeddings with SVM/MLP) and fine-tuned transformers (BERT, RoBERTa, LoRA).</p>
+      <div class="tags"><span class="tag">scikit-learn</span><span class="tag">Hugging Face</span><span class="tag">BERT / RoBERTa</span><span class="tag">LoRA</span></div>
     </div>
     <div class="item">
-      <div class="item-head"><h3>CarbonSens</h3><span class="when">GAIAthon'25</span></div>
-      <p><span class="todo">[One line on what CarbonSens does]</span></p>
+      <div class="item-head"><h3>Vision OOP: real-time video filters</h3><span class="when">IN204</span></div>
+      <p>C++/OpenCV webcam app with 14 filters built on OOP and design patterns, a modular pipeline with sequential, parallel and GPU modes, split view and benchmarking. Built with Ons Lounissi.</p>
+      <div class="tags"><span class="tag">C++</span><span class="tag">OpenCV</span><span class="tag">threads / OpenCL</span><span class="tag">CMake</span></div>
     </div>
     <div class="item">
-      <div class="item-head"><h3>ClinicAI</h3><span class="when">Hackathon</span></div>
-      <p>AI-powered management suite for private medical clinics in Tunisia, built with Bolt and the Groq API.</p>
+      <div class="item-head"><h3>PixSee: image restoration game</h3><span class="when">IN104</span></div>
+      <p>A C game where you guess an altered image as it is progressively restored from corruptions like noise and shifts. SDL3 interface tuned to load in under 2 s and run at 30 FPS.</p>
+      <div class="tags"><span class="tag">C</span><span class="tag">SDL3</span><span class="tag">memory optimization</span></div>
     </div>
   </section>
 
@@ -217,20 +235,20 @@ footer .sig { font-family: var(--display); font-size: 1.7rem; color: var(--ink);
     <svg class="mascot" data-actor="graduate" viewBox="-55 -125 110 170" aria-hidden="true"></svg>
     <h2>Education</h2>
     <div class="item">
-      <div class="item-head"><h3>M2 MVA (Mathématiques, Vision, Apprentissage)</h3><span class="when">2026 – 27</span></div>
+      <div class="item-head"><h3>Master 2 MVA (Mathematics, Vision, Learning)</h3><span class="when">2026 – 27</span></div>
       <span class="where">ENS Paris-Saclay</span>
     </div>
     <div class="item">
-      <div class="item-head"><h3>Engineering degree, Computer Science (AI track)</h3><span class="when">2024 – 27</span></div>
-      <span class="where">ENSTA Paris · Research &amp; Innovation track · 19.7/20 in Machine Learning</span>
+      <div class="item-head"><h3>General Engineering Degree, major in Computer Science</h3><span class="when">2024 – 27</span></div>
+      <span class="where">ENSTA Paris, Palaiseau</span>
     </div>
     <div class="item">
-      <div class="item-head"><h3>Engineering degree (double diploma)</h3><span class="when todo">[years]</span></div>
-      <span class="where">ENIT, Tunisia</span>
+      <div class="item-head"><h3>Engineering Degree in Advanced Techniques (double degree)</h3><span class="when">2024 – 27</span></div>
+      <span class="where">ENIT, Tunis</span>
     </div>
     <div class="item">
-      <div class="item-head"><h3>Preparatory classes, MP</h3><span class="when todo">[years]</span></div>
-      <span class="where">11th of ~1,750 in the Tunisian national entrance exam</span>
+      <div class="item-head"><h3>Preparatory cycle, Maths-Physics</h3><span class="when">2022 – 24</span></div>
+      <span class="where">IPEIEM, Tunis · ranked 11 / 1,750 in the national entrance exam</span>
     </div>
   </section>
 
@@ -238,9 +256,22 @@ footer .sig { font-family: var(--display); font-size: 1.7rem; color: var(--ink);
     <svg class="mascot" data-actor="champion" viewBox="-55 -125 110 170" aria-hidden="true"></svg>
     <h2>Wins</h2>
     <ul class="list">
-      <li><span class="when">2025</span><span>1st place, GAIAthon'25 (CarbonSens)</span></li>
-      <li><span class="when todo">[year]</span><span>Winner, IAOdyssey hackathon (Dione Protocol)</span></li>
-      <li><span class="when">MP</span><span>11th / ~1,750, Tunisian national engineering entrance exam</span></li>
+      <li><span class="when">2025</span><span>GAIAthon'25, national and continental (Africa) winner with CarbonSens</span></li>
+      <li><span class="when">2025</span><span>IAOdyssey hackathon winner, Dione Protocol</span></li>
+      <li><span class="when">2024</span><span>Ranked 11 / 1,750 in the Tunisian national engineering entrance exam</span></li>
+    </ul>
+  </section>
+
+  <section class="note" id="skills">
+    <svg class="mascot" data-actor="flexer" viewBox="-55 -105 110 150" aria-hidden="true"></svg>
+    <h2>Toolbox</h2>
+    <ul class="list">
+      <li><span class="when">Code</span><span>Python, C, C++</span></li>
+      <li><span class="when">AI</span><span>PyTorch, Hugging Face Transformers, scikit-learn, OpenCV, LangChain, LangGraph</span></li>
+      <li><span class="when">Web</span><span>FastAPI, Django, Streamlit, React</span></li>
+      <li><span class="when">Data</span><span>SQL, MongoDB, NumPy, Pandas, Matplotlib</span></li>
+      <li><span class="when">Tools</span><span>Git, GitHub, Docker, CMake</span></li>
+      <li><span class="when">I speak</span><span>Arabic (native), French and English (bilingual), German (A2)</span></li>
     </ul>
   </section>
 
@@ -380,6 +411,7 @@ function notes(actor, t, P) {
 /* ---------- build actors ---------- */
 const actors = [];
 const BEHAVE = {
+  flexer: {},
   reader: { after(t, P) {
     const st = this.state;
     if (!st.book) {
@@ -440,7 +472,7 @@ const BEHAVE = {
 
 document.querySelectorAll(".mascot").forEach(svg => {
   const kind = svg.dataset.actor;
-  const pose = { reader: "read", listener: "groove", juggler: "juggle", graduate: "stand", champion: "hold" }[kind];
+  const pose = { reader: "read", listener: "groove", juggler: "juggle", graduate: "stand", champion: "hold", flexer: "flex" }[kind];
   const a = new Actor(svg, { pose }, BEHAVE[kind]);
   if (kind === "champion") { const base = a.pose.bind(a); a.pose = t => { const p = base(t); p.lift = (p.lift || 0) + (a.hopLift || 0); return p; }; }
   actors.push(a);
@@ -462,7 +494,7 @@ actors.push(hero);
 
 /* Walker: mini me strolling along the bottom */
 const walkEl = document.getElementById("walker"), walkSvg = document.getElementById("walkSvg"), wb = document.getElementById("walkBubble");
-const MSGS = ["Aslema! Bonjour! Hi!", "I'm mini-Youssef.", "Looking for a research internship!", "Check out the Research note ↑", "Click the doodles, they jump.", "Watermarks: still hunting them."];
+const MSGS = ["Aslema! Bonjour! Hi!", "I'm mini-Youssef.", "Looking for a research internship!", "Check out my Inria work ↑", "Click the doodles, they jump.", "Green tokens good, red tokens bad."];
 let walker = null;
 if (!reduce) {
   walker = new Actor(walkSvg, { R: 17, face: true, boil: 1.2, pose: "walk" }, {
@@ -502,17 +534,23 @@ function drawWave(t) {
   if (!w) return;
   if (cv.width !== Math.round(w * dpr)) { cv.width = Math.round(w * dpr); cv.height = Math.round(h * dpr); }
   ctx.setTransform(dpr, 0, 0, dpr, 0, 0); ctx.clearRect(0, 0, w, h);
-  const mid = h / 2, n = Math.max(40, Math.floor(w / 6));
+  const mid = 26, n = Math.max(40, Math.floor(w / 6));
   ctx.strokeStyle = tok("--ink"); ctx.lineWidth = 2.6; ctx.lineCap = "round";
   for (let i = 0; i < n; i++) {
     const x = 4 + i * ((w - 8) / n), u = i / n;
     const env = 0.3 + 0.7 * Math.abs(S(u * 3.1 + 0.6)) * (0.6 + 0.4 * S(u * 17 + t * 0.8));
-    const a = Math.abs(env * (0.55 + 0.45 * S(i * 1.7 + t * 1.5)) * (mid - 6));
+    const a = Math.abs(env * (0.55 + 0.45 * S(i * 1.7 + t * 1.5)) * (mid - 4));
     ctx.beginPath(); ctx.moveTo(x, mid - a); ctx.lineTo(x, mid + a); ctx.stroke();
   }
-  ctx.strokeStyle = tok("--red"); ctx.lineWidth = 2.2; ctx.beginPath();
-  for (let x = 0; x <= w; x += 3) { const y = mid + 4 * S(x * 0.08 + t * 2.4) * S(x * 0.012 + 0.4); x ? ctx.lineTo(x, y) : ctx.moveTo(x, y); }
-  ctx.stroke();
+  const cell = 12, gap = 3, rows = 4, top = 57, cols = Math.floor((w - 4) / (cell + gap));
+  const shift = Math.floor(t * 4), g = tok("--green"), r = tok("--red");
+  ctx.lineWidth = 1.6; ctx.strokeStyle = tok("--ink");
+  for (let row = 0; row < rows; row++) for (let c = 0; c < cols; c++) {
+    const k = c + shift, hsh = Math.abs(S((k * 12.9898 + row * 78.233)) * 43758.5453) % 1;
+    ctx.fillStyle = hsh < 0.86 ? g : r;
+    const x = 2 + c * (cell + gap), y = top + row * (cell + gap) - 0;
+    ctx.beginPath(); ctx.roundRect ? ctx.roundRect(x, y, cell, cell - 2, 2) : ctx.rect(x, y, cell, cell - 2); ctx.fill(); ctx.stroke();
+  }
 }
 
 /* Main loop */
